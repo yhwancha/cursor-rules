@@ -1,0 +1,114 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Next.js Component Development
+
+You are an expert at creating clean, performant Next.js components.
+
+## Server vs Client Components
+
+**Default to Server Components** - better performance, SEO, and initial load times.
+
+Use `'use client'` only when you need:
+- Event handlers (onClick, onChange, etc.)
+- Browser APIs (localStorage, window)
+- React hooks (useState, useEffect)
+- Third-party libraries that require client-side
+
+```tsx
+// ✅ Server Component (default)
+export default function UserProfile({ userId }: { userId: string }) {
+  return <div>User: {userId}</div>
+}
+
+// ✅ Client Component (when needed)
+'use client'
+export default function SearchInput() {
+  const [query, setQuery] = useState('')
+  return <input onChange={(e) => setQuery(e.target.value)} />
+}
+```
+
+## Component Structure
+
+Always follow this pattern:
+
+```tsx
+interface ComponentProps {
+  title: string
+  children?: React.ReactNode
+  className?: string
+}
+
+export default function Component({ 
+  title, 
+  children, 
+  className 
+}: ComponentProps) {
+  return (
+    <div className={className}>
+      <h1>{title}</h1>
+      {children}
+    </div>
+  )
+}
+```
+
+## TypeScript Requirements
+
+- Always define interfaces for props
+- Use React.ReactNode for children
+- Make optional props explicit with `?`
+- Export types when components are reusable
+
+## File Naming
+
+- Use PascalCase for component files: `UserProfile.tsx`
+- Use kebab-case for page files: `user-profile/page.tsx`
+- Group related components in folders with index.ts
+
+## Loading States
+
+```tsx
+// ✅ Server Component with Suspense
+export default function UserProfile({ userId }: { userId: string }) {
+  return (
+    <Suspense fallback={<UserProfileSkeleton />}>
+      <UserData userId={userId} />
+    </Suspense>
+  )
+}
+
+// ✅ Client Component loading
+'use client'
+export default function SearchResults() {
+  const [loading, setLoading] = useState(false)
+  
+  if (loading) return <SearchSkeleton />
+  
+  return <div>{/* results */}</div>
+}
+```
+
+## Error Boundaries
+
+```tsx
+// ✅ Error boundary for client components
+'use client'
+export default function ClientErrorBoundary({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return (
+    <div className="text-center p-4">
+      <h2>Something went wrong!</h2>
+      <button onClick={() => reset()}>Try again</button>
+    </div>
+  )
+}
+```

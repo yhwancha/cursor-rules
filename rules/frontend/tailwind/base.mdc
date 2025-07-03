@@ -1,0 +1,168 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Tailwind CSS Base Utilities
+
+You are an expert at using Tailwind CSS efficiently and maintainably.
+
+## Core Principles
+
+- **Utility-first**: Compose designs using utility classes
+- **Responsive design**: Mobile-first approach with responsive prefixes
+- **Consistency**: Use design tokens from your tailwind.config.js
+- **Performance**: Prefer utilities over custom CSS
+
+## Basic Layout & Spacing
+
+```tsx
+// ✅ Flexbox layouts
+<div className="flex items-center justify-between gap-4">
+  <div className="flex-1">Content</div>
+  <div className="flex-shrink-0">Sidebar</div>
+</div>
+
+// ✅ Grid layouts
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  {items.map(item => <Card key={item.id} />)}
+</div>
+
+// ✅ Container with max width
+<div className="container mx-auto px-4 max-w-7xl">
+  <main className="py-8">Content</main>
+</div>
+```
+
+## Responsive Design
+
+```tsx
+// ✅ Mobile-first responsive
+<div className="
+  text-sm md:text-base lg:text-lg
+  p-4 md:p-6 lg:p-8
+  grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+">
+  Content
+</div>
+
+// ✅ Hide/show on different screens
+<div className="hidden md:block">Desktop only</div>
+<div className="block md:hidden">Mobile only</div>
+```
+
+## Typography
+
+```tsx
+// ✅ Text sizing and styling
+<h1 className="text-3xl font-bold text-gray-900">Main Heading</h1>
+<p className="text-base text-gray-700 leading-relaxed">Body text</p>
+<span className="text-sm text-gray-500">Helper text</span>
+
+// ✅ Text alignment
+<div className="text-left md:text-center lg:text-right">
+  Responsive text alignment
+</div>
+```
+
+## Colors & Theming
+
+```tsx
+// ✅ Background colors
+<div className="bg-white dark:bg-gray-900">
+<div className="bg-blue-50 hover:bg-blue-100">
+<div className="bg-gradient-to-r from-blue-500 to-purple-600">
+
+// ✅ Text colors
+<p className="text-gray-900 dark:text-gray-100">
+<span className="text-blue-600 hover:text-blue-800">
+<em className="text-red-600">Error message</em>
+```
+
+## Borders & Shadows
+
+```tsx
+// ✅ Borders
+<div className="border border-gray-200 rounded-lg">
+<div className="border-l-4 border-blue-500">
+<div className="divide-y divide-gray-200">
+
+// ✅ Shadows
+<div className="shadow-sm hover:shadow-md transition-shadow">
+<div className="shadow-lg">
+<div className="drop-shadow-md">
+```
+
+## Spacing Scale
+
+```tsx
+// ✅ Consistent spacing (using 4px base unit)
+const spacing = {
+  xs: "p-2",    // 8px
+  sm: "p-4",    // 16px  
+  md: "p-6",    // 24px
+  lg: "p-8",    // 32px
+  xl: "p-12"    // 48px
+}
+
+// ✅ Margin and padding
+<div className="m-4 p-6">        // 16px margin, 24px padding
+<div className="mx-auto my-8">    // Auto horizontal, 32px vertical
+<div className="pl-4 pr-2">      // 16px left, 8px right padding
+```
+
+## State Variants
+
+```tsx
+// ✅ Interactive states
+<button className="
+  bg-blue-600 hover:bg-blue-700 active:bg-blue-800
+  text-white font-medium px-4 py-2 rounded
+  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+  disabled:opacity-50 disabled:cursor-not-allowed
+  transition-colors duration-200
+">
+  Interactive Button
+</button>
+
+// ✅ Form states
+<input className="
+  border border-gray-300 rounded px-3 py-2
+  focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+  invalid:border-red-500 invalid:ring-red-500
+  disabled:bg-gray-100
+" />
+```
+
+## Dark Mode
+
+```tsx
+// ✅ Dark mode classes
+<div className="
+  bg-white dark:bg-gray-900
+  text-gray-900 dark:text-gray-100
+  border-gray-200 dark:border-gray-700
+">
+  Content that adapts to dark mode
+</div>
+```
+
+## Utility Organization
+
+### Class Order (Recommended)
+1. Layout (display, position, top/right/bottom/left)
+2. Box model (width, height, margin, padding)
+3. Typography (font, text)
+4. Visual (background, border, shadow)
+5. Misc (cursor, transition, etc.)
+
+```tsx
+// ✅ Organized classes
+<div className="
+  flex items-center justify-center
+  w-full h-64 p-4 m-2
+  text-lg font-semibold text-center
+  bg-blue-100 border border-blue-300 rounded-lg shadow-sm
+  hover:bg-blue-200 transition-colors duration-200
+">
+```

@@ -1,0 +1,170 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Next.js App Router
+
+You are an expert at Next.js App Router structure and navigation.
+
+## Directory Structure
+
+```
+app/
+├── page.tsx                 # Home page
+├── layout.tsx              # Root layout
+├── loading.tsx             # Loading UI
+├── error.tsx               # Error UI
+├── not-found.tsx           # 404 page
+├── dashboard/
+│   ├── page.tsx            # /dashboard
+│   ├── layout.tsx          # Dashboard layout
+│   └── settings/
+│       └── page.tsx        # /dashboard/settings
+└── (auth)/                 # Route groups
+    ├── login/
+    └── register/
+```
+
+## Dynamic Routes
+
+```tsx
+// app/blog/[slug]/page.tsx
+export default function BlogPost({ 
+  params 
+}: { 
+  params: { slug: string } 
+}) {
+  return <h1>Post: {params.slug}</h1>
+}
+
+// app/shop/[...slug]/page.tsx - Catch-all
+export default function Product({ 
+  params 
+}: { 
+  params: { slug: string[] } 
+}) {
+  return <div>Path: {params.slug.join('/')}</div>
+}
+
+// app/user/[[...segments]]/page.tsx - Optional catch-all
+export default function User({ 
+  params 
+}: { 
+  params: { segments?: string[] } 
+}) {
+  return <div>Segments: {params.segments?.join('/') || 'none'}</div>
+}
+```
+
+## Navigation
+
+```tsx
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+// ✅ Link component for client-side navigation
+<Link href="/dashboard" prefetch={false}>
+  Dashboard
+</Link>
+
+// ✅ Programmatic navigation
+const router = useRouter()
+router.push('/dashboard')
+router.replace('/login') // No history entry
+router.back()
+router.forward()
+router.refresh() // Refresh current route
+```
+
+## Layouts
+
+```tsx
+// app/layout.tsx - Root layout
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <header>Global Header</header>
+        {children}
+        <footer>Global Footer</footer>
+      </body>
+    </html>
+  )
+}
+
+// app/dashboard/layout.tsx - Nested layout
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <div className="flex">
+      <aside>Dashboard Sidebar</aside>
+      <main>{children}</main>
+    </div>
+  )
+}
+```
+
+## Route Groups
+
+Use `(folder)` to organize routes without affecting URL:
+
+```
+app/
+├── (marketing)/
+│   ├── about/
+│   └── contact/
+└── (shop)/
+    ├── products/
+    └── cart/
+```
+
+## Parallel Routes
+
+```tsx
+// app/dashboard/@team/page.tsx
+// app/dashboard/@analytics/page.tsx
+// app/dashboard/layout.tsx
+export default function DashboardLayout({
+  children,
+  team,
+  analytics,
+}: {
+  children: React.ReactNode
+  team: React.ReactNode
+  analytics: React.ReactNode
+}) {
+  return (
+    <div>
+      {children}
+      <div className="grid grid-cols-2 gap-4">
+        {team}
+        {analytics}
+      </div>
+    </div>
+  )
+}
+```
+
+## Intercepting Routes
+
+```tsx
+// app/photo/[id]/page.tsx - Full page
+// app/@modal/(.)photo/[id]/page.tsx - Modal overlay
+export default function PhotoModal({ params }: { params: { id: string } }) {
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+      <div className="bg-white p-4 rounded">
+        <Photo id={params.id} />
+      </div>
+    </div>
+  )
+}
+```

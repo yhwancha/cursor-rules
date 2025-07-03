@@ -1,0 +1,120 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Next.js Data Fetching
+
+You are an expert at Next.js data fetching strategies.
+
+## Server Components (Preferred)
+
+**Use async/await directly in Server Components:**
+
+```tsx
+async function getData() {
+  const res = await fetch('https://api.example.com/data', {
+    next: { revalidate: 3600 } // Cache for 1 hour
+  })
+  
+  if (!res.ok) {
+    throw new Error('Failed to fetch data')
+  }
+  
+  return res.json()
+}
+
+export default async function Page() {
+  const data = await getData()
+  return <div>{data.title}</div>
+}
+```
+
+## Caching Strategies
+
+```tsx
+// Static data (cached indefinitely)
+fetch(url, { cache: 'force-cache' })
+
+// Revalidate every hour
+fetch(url, { next: { revalidate: 3600 } })
+
+// Always fresh
+fetch(url, { cache: 'no-store' })
+
+// Tag-based revalidation
+fetch(url, { next: { tags: ['posts'] } })
+```
+
+## Client Components
+
+**Use SWR or React Query for client-side fetching:**
+
+```tsx
+'use client'
+import useSWR from 'swr'
+
+const fetcher = (url: string) => fetch(url).then(res => res.json())
+
+export default function Profile() {
+  const { data, error, isLoading } = useSWR('/api/user', fetcher)
+  
+  if (error) return <div>Failed to load</div>
+  if (isLoading) return <div>Loading...</div>
+  
+  return <div>Hello {data.name}!</div>
+}
+```
+
+## Error Handling
+
+```tsx
+// Server Component error handling
+async function getData() {
+  try {
+    const res = await fetch(url)
+    if (!res.ok) throw new Error('Network response was not ok')
+    return res.json()
+  } catch (error) {
+    console.error('Fetch error:', error)
+    throw error // Will be caught by error.tsx
+  }
+}
+```
+
+## Parallel Data Fetching
+
+```tsx
+// ✅ Parallel fetching
+export default async function Page() {
+  const [userData, postsData] = await Promise.all([
+    fetch('/api/user').then(res => res.json()),
+    fetch('/api/posts').then(res => res.json())
+  ])
+  
+  return (
+    <div>
+      <Profile user={userData} />
+      <Posts posts={postsData} />
+    </div>
+  )
+}
+```
+
+## Streaming with Suspense
+
+```tsx
+export default function Page() {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <Suspense fallback={<UserSkeleton />}>
+        <UserData />
+      </Suspense>
+      <Suspense fallback={<PostsSkeleton />}>
+        <PostsData />
+      </Suspense>
+    </div>
+  )
+}
+```

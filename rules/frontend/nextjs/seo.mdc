@@ -1,0 +1,177 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Next.js SEO & Metadata
+
+You are an expert at Next.js SEO optimization and metadata management.
+
+## Static Metadata
+
+```tsx
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Home | My App',
+  description: 'Welcome to my amazing app',
+  keywords: ['nextjs', 'react', 'typescript'],
+  authors: [{ name: 'Your Name' }],
+  creator: 'Your Company',
+  publisher: 'Your Company',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://example.com',
+    title: 'My App',
+    description: 'Welcome to my amazing app',
+    siteName: 'My App',
+    images: [
+      {
+        url: 'https://example.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'My App',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'My App',
+    description: 'Welcome to my amazing app',
+    creator: '@yourusername',
+    images: ['https://example.com/og-image.jpg'],
+  },
+}
+```
+
+## Dynamic Metadata
+
+```tsx
+import type { Metadata } from 'next'
+
+interface Props {
+  params: { slug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const post = await getPost(params.slug)
+  
+  return {
+    title: post.title,
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: 'article',
+      publishedTime: post.publishedAt,
+      authors: [post.author.name],
+      images: [
+        {
+          url: post.image,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: [post.image],
+    },
+  }
+}
+```
+
+## Structured Data (JSON-LD)
+
+```tsx
+export default function BlogPost({ post }: { post: Post }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt,
+    image: post.image,
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt,
+    author: {
+      '@type': 'Person',
+      name: post.author.name,
+    },
+  }
+
+  return (
+    <article>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <h1>{post.title}</h1>
+      <p>{post.content}</p>
+    </article>
+  )
+}
+```
+
+## Sitemap Generation
+
+```tsx
+// app/sitemap.ts
+import { MetadataRoute } from 'next'
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    {
+      url: 'https://example.com',
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 1,
+    },
+    {
+      url: 'https://example.com/about',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: 'https://example.com/blog',
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    },
+  ]
+}
+```
+
+## Robots.txt
+
+```tsx
+// app/robots.ts
+import { MetadataRoute } from 'next'
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: {
+      userAgent: '*',
+      allow: '/',
+      disallow: '/private/',
+    },
+    sitemap: 'https://example.com/sitemap.xml',
+  }
+}
+```

@@ -1,0 +1,229 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Tailwind Component Patterns
+
+You are an expert at building reusable components with Tailwind CSS.
+
+## Button Components
+
+```tsx
+// ✅ Button variants with consistent styling
+const Button = ({ variant, size, children, ...props }: ButtonProps) => {
+  const baseStyles = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none"
+  
+  const variants = {
+    default: "bg-primary text-primary-foreground hover:bg-primary/90",
+    destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+    outline: "border border-input hover:bg-accent hover:text-accent-foreground",
+    secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+    ghost: "hover:bg-accent hover:text-accent-foreground",
+    link: "underline-offset-4 hover:underline text-primary"
+  }
+  
+  const sizes = {
+    default: "h-10 py-2 px-4",
+    sm: "h-9 px-3 rounded-md",
+    lg: "h-11 px-8 rounded-md",
+    icon: "h-10 w-10"
+  }
+  
+  return (
+    <button 
+      className={`${baseStyles} ${variants[variant]} ${sizes[size]}`}
+      {...props}
+    >
+      {children}
+    </button>
+  )
+}
+```
+
+## Card Components
+
+```tsx
+// ✅ Consistent card styling
+const Card = ({ children, className, ...props }: CardProps) => (
+  <div 
+    className={`
+      rounded-lg border bg-card text-card-foreground shadow-sm
+      ${className}
+    `}
+    {...props}
+  >
+    {children}
+  </div>
+)
+
+const CardHeader = ({ children, className }: CardHeaderProps) => (
+  <div className={`flex flex-col space-y-1.5 p-6 ${className}`}>
+    {children}
+  </div>
+)
+
+const CardContent = ({ children, className }: CardContentProps) => (
+  <div className={`p-6 pt-0 ${className}`}>
+    {children}
+  </div>
+)
+```
+
+## Badge Components
+
+```tsx
+// ✅ Badge variants
+const Badge = ({ variant, children }: BadgeProps) => {
+  const variants = {
+    default: "bg-primary hover:bg-primary/80 text-primary-foreground",
+    secondary: "bg-secondary hover:bg-secondary/80 text-secondary-foreground",
+    destructive: "bg-destructive hover:bg-destructive/80 text-destructive-foreground",
+    outline: "text-foreground border border-input hover:bg-accent hover:text-accent-foreground"
+  }
+  
+  return (
+    <div className={`
+      inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold 
+      transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2
+      ${variants[variant]}
+    `}>
+      {children}
+    </div>
+  )
+}
+```
+
+## Loading Components
+
+```tsx
+// ✅ Skeleton loading
+const Skeleton = ({ className }: SkeletonProps) => (
+  <div className={`animate-pulse rounded-md bg-muted ${className}`} />
+)
+
+// ✅ Spinner component
+const Spinner = ({ size = "default" }: SpinnerProps) => {
+  const sizes = {
+    sm: "h-4 w-4",
+    default: "h-6 w-6", 
+    lg: "h-8 w-8"
+  }
+  
+  return (
+    <div className={`animate-spin rounded-full border-2 border-current border-t-transparent ${sizes[size]}`}>
+      <span className="sr-only">Loading...</span>
+    </div>
+  )
+}
+```
+
+## Alert Components
+
+```tsx
+// ✅ Alert variants
+const Alert = ({ variant, children }: AlertProps) => {
+  const variants = {
+    default: "bg-background text-foreground border",
+    destructive: "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
+    warning: "border-yellow-500/50 text-yellow-600 dark:border-yellow-500 [&>svg]:text-yellow-600",
+    success: "border-green-500/50 text-green-600 dark:border-green-500 [&>svg]:text-green-600"
+  }
+  
+  return (
+    <div className={`
+      relative w-full rounded-lg border p-4
+      [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground
+      ${variants[variant]}
+    `}>
+      {children}
+    </div>
+  )
+}
+```
+
+## Avatar Components
+
+```tsx
+// ✅ Avatar component
+const Avatar = ({ src, fallback, size = "default" }: AvatarProps) => {
+  const sizes = {
+    sm: "h-8 w-8",
+    default: "h-10 w-10",
+    lg: "h-12 w-12",
+    xl: "h-16 w-16"
+  }
+  
+  return (
+    <div className={`relative flex shrink-0 overflow-hidden rounded-full ${sizes[size]}`}>
+      {src ? (
+        <img src={src} alt="Avatar" className="aspect-square h-full w-full" />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center rounded-full bg-muted">
+          <span className="text-sm font-medium">{fallback}</span>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+## Navigation Components
+
+```tsx
+// ✅ Breadcrumb component
+const Breadcrumb = ({ items }: BreadcrumbProps) => (
+  <nav className="flex" aria-label="Breadcrumb">
+    <ol className="inline-flex items-center space-x-1 md:space-x-3">
+      {items.map((item, index) => (
+        <li key={index} className="inline-flex items-center">
+          {index > 0 && (
+            <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+            </svg>
+          )}
+          {item.href ? (
+            <Link href={item.href} className="text-gray-700 hover:text-gray-900">
+              {item.label}
+            </Link>
+          ) : (
+            <span className="text-gray-500">{item.label}</span>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+)
+```
+
+## Design System Tokens
+
+Use consistent spacing, colors, and typography:
+
+```tsx
+// ✅ Design tokens
+const tokens = {
+  spacing: {
+    xs: "0.5rem",   // 8px
+    sm: "1rem",     // 16px  
+    md: "1.5rem",   // 24px
+    lg: "2rem",     // 32px
+    xl: "3rem"      // 48px
+  },
+  colors: {
+    primary: "hsl(var(--primary))",
+    secondary: "hsl(var(--secondary))",
+    destructive: "hsl(var(--destructive))",
+    muted: "hsl(var(--muted))",
+    accent: "hsl(var(--accent))"
+  },
+  typography: {
+    xs: "0.75rem",    // 12px
+    sm: "0.875rem",   // 14px
+    base: "1rem",     // 16px
+    lg: "1.125rem",   // 18px
+    xl: "1.25rem",    // 20px
+    "2xl": "1.5rem"   // 24px
+  }
+}
+```

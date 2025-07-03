@@ -1,0 +1,228 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Tailwind Layout Patterns
+
+You are an expert at creating responsive layouts with Tailwind CSS.
+
+## Container & Max Widths
+
+```tsx
+// ✅ Standard container pattern
+<div className="container mx-auto px-4 sm:px-6 lg:px-8">
+  <div className="max-w-7xl mx-auto">
+    {/* Content */}
+  </div>
+</div>
+
+// ✅ Content width constraints
+<div className="max-w-prose mx-auto">      {/* ~65ch for reading */}
+<div className="max-w-screen-sm mx-auto">  {/* 640px */}
+<div className="max-w-screen-md mx-auto">  {/* 768px */}
+<div className="max-w-screen-lg mx-auto">  {/* 1024px */}
+<div className="max-w-screen-xl mx-auto">  {/* 1280px */}
+```
+
+## Grid Layouts
+
+```tsx
+// ✅ Responsive grid
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  {items.map(item => <Card key={item.id} />)}
+</div>
+
+// ✅ Auto-fit grid (responsive without breakpoints)
+<div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
+  {items.map(item => <Card key={item.id} />)}
+</div>
+
+// ✅ Dashboard grid layout
+<div className="grid grid-cols-12 gap-6">
+  <div className="col-span-12 lg:col-span-8">Main content</div>
+  <div className="col-span-12 lg:col-span-4">Sidebar</div>
+</div>
+
+// ✅ Complex grid layout
+<div className="grid grid-cols-4 grid-rows-3 gap-4 h-screen">
+  <div className="col-span-4 row-span-1">Header</div>
+  <div className="col-span-1 row-span-2">Sidebar</div>
+  <div className="col-span-3 row-span-2">Main</div>
+</div>
+```
+
+## Flexbox Layouts
+
+```tsx
+// ✅ Header layout
+<header className="flex items-center justify-between p-4">
+  <div className="flex items-center gap-4">
+    <Logo />
+    <nav className="hidden md:flex items-center gap-6">
+      <NavLink />
+    </nav>
+  </div>
+  <div className="flex items-center gap-2">
+    <Button />
+  </div>
+</header>
+
+// ✅ Sidebar layout
+<div className="flex h-screen">
+  <aside className="w-64 bg-gray-50 p-4">Sidebar</aside>
+  <main className="flex-1 p-6 overflow-auto">Content</main>
+</div>
+
+// ✅ Card with flex footer
+<div className="flex flex-col h-full">
+  <div className="flex-1">Content</div>
+  <div className="mt-auto pt-4">Footer actions</div>
+</div>
+```
+
+## Common Layout Patterns
+
+```tsx
+// ✅ Holy Grail Layout
+<div className="min-h-screen flex flex-col">
+  <header className="bg-white shadow">Header</header>
+  <div className="flex-1 flex">
+    <aside className="w-64 bg-gray-50">Sidebar</aside>
+    <main className="flex-1 p-6">Main Content</main>
+    <aside className="w-48 bg-gray-50">Right Sidebar</aside>
+  </div>
+  <footer className="bg-gray-800 text-white p-4">Footer</footer>
+</div>
+
+// ✅ Centered Layout
+<div className="min-h-screen flex items-center justify-center bg-gray-50">
+  <div className="w-full max-w-md p-6 bg-white rounded-lg shadow">
+    <LoginForm />
+  </div>
+</div>
+
+// ✅ Split Screen
+<div className="min-h-screen grid md:grid-cols-2">
+  <div className="bg-blue-600 p-12 text-white">
+    <h1>Welcome Back</h1>
+  </div>
+  <div className="p-12">
+    <LoginForm />
+  </div>
+</div>
+
+// ✅ Masonry Layout (with CSS Grid)
+<div className="columns-1 md:columns-2 lg:columns-3 gap-6">
+  {items.map(item => (
+    <div key={item.id} className="break-inside-avoid mb-6">
+      <Card />
+    </div>
+  ))}
+</div>
+```
+
+## Responsive Patterns
+
+```tsx
+// ✅ Mobile-first navigation
+<nav className="block md:hidden"> {/* Mobile menu */}
+  <MobileMenu />
+</nav>
+<nav className="hidden md:flex"> {/* Desktop menu */}
+  <DesktopMenu />
+</nav>
+
+// ✅ Responsive text
+<h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold">
+  Responsive Heading
+</h1>
+
+// ✅ Responsive spacing
+<div className="p-4 sm:p-6 lg:p-8 xl:p-12">
+  Content with responsive padding
+</div>
+
+// ✅ Responsive grid columns
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+```
+
+## Z-Index Stack
+
+```tsx
+// ✅ Consistent z-index scale
+const zIndex = {
+  dropdown: "z-10",
+  sticky: "z-20", 
+  fixed: "z-30",
+  modalBackdrop: "z-40",
+  modal: "z-50",
+  popover: "z-60",
+  tooltip: "z-70",
+  toast: "z-80"
+}
+
+// ✅ Usage
+<div className="fixed inset-0 bg-black/50 z-40"> {/* Modal backdrop */}
+<div className="fixed inset-0 flex items-center justify-center z-50"> {/* Modal */}
+```
+
+## Aspect Ratios
+
+```tsx
+// ✅ Common aspect ratios
+<div className="aspect-square"> {/* 1:1 */}
+<div className="aspect-video">  {/* 16:9 */}
+<div className="aspect-[4/3]">  {/* 4:3 */}
+<div className="aspect-[3/2]">  {/* 3:2 */}
+
+// ✅ Responsive image container
+<div className="aspect-video relative overflow-hidden rounded-lg">
+  <Image 
+    src="/image.jpg" 
+    alt="Description"
+    fill
+    className="object-cover"
+  />
+</div>
+```
+
+## Sticky & Fixed Elements
+
+```tsx
+// ✅ Sticky header
+<header className="sticky top-0 z-30 bg-white border-b">
+  Navigation
+</header>
+
+// ✅ Sticky sidebar
+<aside className="sticky top-20 h-fit">
+  Table of contents
+</aside>
+
+// ✅ Fixed positioning
+<div className="fixed bottom-4 right-4 z-50">
+  <FloatingActionButton />
+</div>
+```
+
+## Overflow Handling
+
+```tsx
+// ✅ Scrollable content
+<div className="h-64 overflow-y-auto">
+  Scrollable content
+</div>
+
+// ✅ Horizontal scroll
+<div className="w-full overflow-x-auto">
+  <table className="min-w-full">
+    {/* Table content */}
+  </table>
+</div>
+
+// ✅ Text overflow
+<p className="truncate">Very long text that will be truncated</p>
+<p className="line-clamp-3">Text that will be clamped to 3 lines</p>
+```
+

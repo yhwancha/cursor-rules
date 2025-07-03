@@ -1,0 +1,143 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Next.js Performance Optimization
+
+You are an expert at optimizing Next.js applications for performance.
+
+## Image Optimization
+
+**Always use Next.js Image component:**
+
+```tsx
+import Image from 'next/image'
+
+// ✅ Optimized images
+<Image
+  src="/hero.jpg"
+  alt="Hero image"
+  width={800}
+  height={600}
+  priority // For above-the-fold images
+  placeholder="blur"
+  blurDataURL="data:image/jpeg;base64,..."
+/>
+
+// ✅ Responsive images
+<Image
+  src="/hero.jpg"
+  alt="Hero"
+  fill
+  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+  style={{ objectFit: 'cover' }}
+/>
+```
+
+## Code Splitting
+
+**Use dynamic imports for heavy components:**
+
+```tsx
+import dynamic from 'next/dynamic'
+
+// ✅ Lazy load heavy components
+const HeavyChart = dynamic(() => import('./HeavyChart'), {
+  loading: () => <p>Loading chart...</p>,
+  ssr: false // Disable SSR if component uses browser APIs
+})
+
+// ✅ Conditional loading
+const AdminPanel = dynamic(() => import('./AdminPanel'), {
+  ssr: false
+})
+
+export default function Dashboard({ isAdmin }: { isAdmin: boolean }) {
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      {isAdmin && <AdminPanel />}
+    </div>
+  )
+}
+```
+
+## Bundle Analysis
+
+```tsx
+// Use React.memo for expensive re-renders
+const ExpensiveComponent = React.memo(function ExpensiveComponent({ 
+  data 
+}: { 
+  data: ComplexData 
+}) {
+  const processedData = useMemo(() => {
+    return expensiveComputation(data)
+  }, [data])
+  
+  return <div>{processedData}</div>
+})
+
+// Use useCallback for stable function references
+const ParentComponent = () => {
+  const [count, setCount] = useState(0)
+  
+  const handleClick = useCallback(() => {
+    setCount(prev => prev + 1)
+  }, [])
+  
+  return <ChildComponent onClick={handleClick} />
+}
+```
+
+## Font Optimization
+
+```tsx
+// app/layout.tsx
+import { Inter } from 'next/font/google'
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true
+})
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="en" className={inter.className}>
+      <body>{children}</body>
+    </html>
+  )
+}
+```
+
+## Streaming and Suspense
+
+```tsx
+import { Suspense } from 'react'
+
+export default function Page() {
+  return (
+    <div>
+      <h1>Page Title</h1>
+      <Suspense fallback={<div>Loading posts...</div>}>
+        <Posts />
+      </Suspense>
+      <Suspense fallback={<div>Loading comments...</div>}>
+        <Comments />
+      </Suspense>
+    </div>
+  )
+}
+```
+
+## Core Web Vitals
+
+- **LCP**: Use priority images, optimize critical CSS
+- **FID**: Minimize JavaScript, use Server Components
+- **CLS**: Set explicit dimensions for images and embeds
